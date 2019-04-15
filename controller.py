@@ -7,5 +7,3 @@ userRequest = Salary("Bay Area", "Software Engineer")
 
 #if user enters "Software Engineer" and "Seattle"
 #userRequest = salary("Seattle", "Software Engineer")
-
-print("hello world!")

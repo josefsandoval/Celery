@@ -6,12 +6,13 @@ import pandas as pd
 import numpy as np
 import re
 
-
+#TODO: make Salary more generic
 class Salary:
     cities = ['San Jose', 'San Mateo', 'Milpitas', 'Saratoga', 'Portola Valley',
               'San Francisco', 'Palo Alto', 'Cupertino', 'Redwood City',
               'Sunnyvale', 'Santa Clara', 'Mountain View', 'Los Gatos'
               ]
+    jobTitle = ""
 
     #constructor
     def init(self, cities, jobTitle):
@@ -111,6 +112,7 @@ class Salary:
     # first page: 0-44, second page: 44-88, third page: 88-132 etc... <-- each page will return 50 results.
     # start range at 0 increment by 44 every time, this should give us ~1000 salary results total for our data
     # (20 soups, each should contain avg. 50 results)
+    #TODO: change file name to make more generic, e.g. JobTitleLocationIndeedSalariesDate.csv
     def scrape_indeed(csv_file_name='Indeed Salaries.csv'):
         records = []
         max_results = 1320
@@ -121,6 +123,7 @@ class Salary:
             # every iteration we start at the next page: page 1(0-44), page 2(44-88)
             # want to grab around 1000 results per city, so set limit to 880
             for start in range(0, max_results, 44):
+                #TODO: take out software+engineer and replace it with the jobTitle string
                 url = 'https://www.indeed.com/jobs?as_and=software+engineer&as_phr=' \
                       '&as_any=&as_not=&as_ttl=&as_cmp=&jt=all&st=&as_src=&salary=&' \
                       'radius=50&l={}%2C+CA&fromage=any&limit=44&start={}&sort=&psf=advsrch'.format(city, start)
@@ -147,6 +150,8 @@ class Salary:
 
 
     # Scrape StackOverflow job postings
+    #TODO: check to see if StackOverflow is a good source for jobs other than software engineer
+    #TODO: change .csv file name
     def scrape_stack_overflow(csv_file_name='Stack Overflow Salaries.csv'):
         records = []
         for city in cities:
@@ -158,6 +163,7 @@ class Salary:
             no_pages = int(soup_pages.find('a', {'class': 'job-link selected'})['title'][-1])
             print('Scraping jobs in {}'.format(city))
             for page in range(0, no_pages + 1):
+                #TODO: take out software+engineer and replace it with the jobTitle string
                 url = 'https://stackoverflow.com/jobs?q=software+engineer&l={}%2c+CA%2c+USA&d=100&u=Miles&s=10000&' \
                       'c=USD&sort=i&pg={}'.format(city, page)
                 result = requests.get(url)
@@ -176,9 +182,11 @@ class Salary:
 
     # Clean up Indeed Salaries data.
     # Cleans up salaries: Removes Estimated Salaries, Include only yearly salary, & Finds the average
+    #TODO: change file name to the generic file name created
     clean_up_salaries('Indeed Salaries.csv', 'Indeed Salaries Clean.csv')
 
     # scrape_stack_overflow()
+    #TODO: change file name to generic file name created
     clean_up_salaries('Stack Overflow Salaries.csv', 'Stack Overflow Salaries Clean.csv')
 
         # Merge csv files
