@@ -11,6 +11,13 @@ cities = ['San Jose', 'San Mateo', 'Milpitas', 'Saratoga', 'Portola Valley',
           'Sunnyvale', 'Santa Clara', 'Mountain View', 'Los Gatos'
           ]
 
+#constructor
+def __init__(self, cities, jobTitle):
+    self.cities = cities;
+    self.jobTitle = jobTitle;
+
+
+
 
 # Helper functions to get the data from Indeed and Stack Overflow tags
 def get_company(tag):
