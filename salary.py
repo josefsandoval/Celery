@@ -5,8 +5,15 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import numpy as np
 import re
+import datetime
 
-#TODO: make Salary more generic
+todays_date = datetime.date.today()  
+
+# print list of locations and jobs, then prompt user 
+user_location = input("Enter location of choice: ")
+user_job = input("Enter job of choice: ")
+user_job = user_job.replace(" ", "+")
+
 class Salary:
     cities = ['San Jose', 'San Mateo', 'Milpitas', 'Saratoga', 'Portola Valley',
               'San Francisco', 'Palo Alto', 'Cupertino', 'Redwood City',
@@ -113,7 +120,7 @@ class Salary:
     # start range at 0 increment by 44 every time, this should give us ~1000 salary results total for our data
     # (20 soups, each should contain avg. 50 results)
     #TODO: change file name to make more generic, e.g. JobTitleLocationIndeedSalariesDate.csv
-    def scrape_indeed(csv_file_name='Indeed Salaries.csv'):
+    def scrape_indeed(indeed_csv_file_name='{} {} Indeed Salaries {}.csv'.format(user_job, user_location, todays_date)):
         records = []
         max_results = 1320
         for city in cities:
@@ -124,9 +131,9 @@ class Salary:
             # want to grab around 1000 results per city, so set limit to 880
             for start in range(0, max_results, 44):
                 #TODO: take out software+engineer and replace it with the jobTitle string
-                url = 'https://www.indeed.com/jobs?as_and=software+engineer&as_phr=' \
+                url = 'https://www.indeed.com/jobs?as_and={}&as_phr=' \
                       '&as_any=&as_not=&as_ttl=&as_cmp=&jt=all&st=&as_src=&salary=&' \
-                      'radius=50&l={}%2C+CA&fromage=any&limit=44&start={}&sort=&psf=advsrch'.format(city, start)
+                      'radius=50&l={}%2C+CA&fromage=any&limit=44&start={}&sort=&psf=advsrch'.format(user_job, city, start)
                 result = requests.get(url)
                 soup = BeautifulSoup(result.text, 'html.parser')
                 soups.append(soup)
@@ -146,17 +153,17 @@ class Salary:
         # drop any data that has missing values, remove any duplicates that appear
         clean = df.dropna(how='any').drop_duplicates()
         # Export the DataFrame to a csv file
-        clean.to_csv(csv_file_name)
+        clean.to_csv(indeed_csv_file_name)
 
 
     # Scrape StackOverflow job postings
     #TODO: check to see if StackOverflow is a good source for jobs other than software engineer
     #TODO: change .csv file name
-    def scrape_stack_overflow(csv_file_name='Stack Overflow Salaries.csv'):
+    def scrape_stack_overflow(stack_overflow_csv_file_name='{} {} Stack Overflow Salaries {}.csv'format(user_job, user_location, todays_date)):
         records = []
         for city in cities:
             # Just to get the total number of pages with job postings
-            url_pages = 'https://stackoverflow.com/jobs?q=software+engineer&l={}%2C+CA%2C+USA&d=100&u=Miles&s=10000&c=USD'.format(
+            url_pages = 'https://stackoverflow.com/jobs?q={}&l={}%2C+CA%2C+USA&d=100&u=Miles&s=10000&c=USD'.format(user_job,
                 city)
             result_pages = requests.get(url_pages)
             soup_pages = BeautifulSoup(result_pages.text, 'html.parser')
@@ -164,8 +171,8 @@ class Salary:
             print('Scraping jobs in {}'.format(city))
             for page in range(0, no_pages + 1):
                 #TODO: take out software+engineer and replace it with the jobTitle string
-                url = 'https://stackoverflow.com/jobs?q=software+engineer&l={}%2c+CA%2c+USA&d=100&u=Miles&s=10000&' \
-                      'c=USD&sort=i&pg={}'.format(city, page)
+                url = 'https://stackoverflow.com/jobs?q={}&l={}%2c+CA%2c+USA&d=100&u=Miles&s=10000&' \
+                      'c=USD&sort=i&pg={}'.format(user_job, city, page)
                 result = requests.get(url)
                 soup = BeautifulSoup(result.text, 'html.parser')
                 for job in soup.find_all('div', {'class': '-job-summary'}):
@@ -174,7 +181,7 @@ class Salary:
 
         df = pd.DataFrame(records, columns=['Job Title', 'Company', 'Location', 'Salary'])
         clean_df = df.dropna(how='any').drop_duplicates()
-        clean_df.to_csv(csv_file_name)
+        clean_df.to_csv(stack_overflow_csv_file_name)
 
 
     # Get Salaries around the bay area
@@ -183,11 +190,11 @@ class Salary:
     # Clean up Indeed Salaries data.
     # Cleans up salaries: Removes Estimated Salaries, Include only yearly salary, & Finds the average
     #TODO: change file name to the generic file name created
-    clean_up_salaries('Indeed Salaries.csv', 'Indeed Salaries Clean.csv')
+    clean_up_salaries(indeed_csv_file_name, '{} {} Indeed Salaries Clean {}.csv'.format(user_job, user_location, todays_date))
 
     # scrape_stack_overflow()
     #TODO: change file name to generic file name created
-    clean_up_salaries('Stack Overflow Salaries.csv', 'Stack Overflow Salaries Clean.csv')
+    clean_up_salaries(stack_overflow_csv_file_name, '{} {} Stack Overflow Salaries Clean {}.csv'.format(user_job, user_location, todays_date))
 
         # Merge csv files
         # Need to turn this into a method
