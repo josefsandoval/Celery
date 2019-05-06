@@ -6,8 +6,9 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import numpy as np
 import re
-
-cities = ['Seattle']
+#Just change these variables and it works
+cities = ['New York']
+state = 'NY'
 
 # Helper functions to get the data from Indeed and Stack Overflow tags
 def get_company(tag):
@@ -120,7 +121,7 @@ class Salary:
             for start in range(0, max_results, 44):
                 url = 'https://www.indeed.com/jobs?as_and=software+engineer&as_phr=' \
                       '&as_any=&as_not=&as_ttl=&as_cmp=&jt=all&st=&as_src=&salary=&' \
-                      'radius=50&l={}%2C+WA&fromage=any&limit=44&start={}&sort=&psf=advsrch'.format(city, start)
+                      'radius=50&l={}%2C+{}&fromage=any&limit=44&start={}&sort=&psf=advsrch'.format(city, state, start)
                 result = requests.get(url)
                 soup = BeautifulSoup(result.text, 'html.parser')
                 soups.append(soup)
@@ -142,10 +143,10 @@ class Salary:
         # Export the DataFrame to a csv file
         clean.to_csv(csv_file_name)
 
-    # Get Salaries around Seattle
+    # Get Salaries around the bay area
     scrape_indeed()
 
     # Clean up Indeed Salaries data.
     # Cleans up salaries: Removes Estimated Salaries, Include only yearly salary, & Finds the average
 
-    clean_up_salaries('Indeed Salaries_Seattle.csv', 'Indeed Salaries Clean_Seattle.csv')
+    clean_up_salaries('Indeed Salaries_' + str(cities[0]) + '.csv', 'Indeed Salaries Clean_' + str(cities[0]) + '.csv')
