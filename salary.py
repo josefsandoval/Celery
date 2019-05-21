@@ -178,11 +178,11 @@ def scrape_stack_overflow(csv_file_name='Stack Overflow Salaries.csv'):
 
 
 # Get Salaries around the bay area
-scrape_indeed()
+#scrape_indeed()
 
 # # Clean up Indeed Salaries data.
 # # Cleans up salaries: Removes Estimated Salaries, Include only yearly salary, & Finds the average
-# clean_up_salaries('Indeed Salaries.csv', 'Indeed Salaries Clean.csv')
+clean_up_salaries('Indeed Salaries.csv', 'Indeed Salaries Clean With CoL.csv')
 #
 # # scrape_stack_overflow()
 # clean_up_salaries('Stack Overflow Salaries.csv', 'Stack Overflow Salaries Clean.csv')
