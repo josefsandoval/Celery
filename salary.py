@@ -12,6 +12,7 @@ cities = ['San Jose', 'San Francisco', 'San Diego', 'Los Angeles', 'Portland', '
 
 job_title = ['Software', 'Computer Science']
 
+cost_of_living_data = pd.read_csv("ColData.csv")
 
 # Helper functions to get the data from Indeed and Stack Overflow tags
 def get_company(tag):
@@ -75,6 +76,13 @@ def get_salary_so(job_post):
     except:
         return None
 
+#get cost of living
+def get_cost_of_living(city):
+    #get first row
+    colCitiesList = cost_of_living_data.iloc[:, 0].tolist()
+    index = colCitiesList.index(city)
+    return cost_of_living_data.iloc[index, 2]
+
 
 # Clean up salaries from out csv file to only include yearly incomes, remove any estimated salaries
 # param1: csv file we want to clean, param2: cleaned/new csv file name
@@ -134,9 +142,9 @@ def scrape_indeed(csv_file_name='Indeed Salaries.csv'):
             print('{} jobs found near {}'.format(len(jobs), city))
 
             for job in jobs:
-                records.append((get_title(job), get_company(job), get_location(job), get_salary(job)))
+                records.append((get_title(job), get_company(job), get_location(job), get_salary(job), get_cost_of_living(city)))
 
-    df = pd.DataFrame(records, columns=['Job_Title', 'Company', 'Location', 'Salary'])
+    df = pd.DataFrame(records, columns=['Job_Title', 'Company', 'Location', 'Salary', 'Cost of Living'])
     # drop any data that has missing values, remove any duplicates that appear
     clean = df.dropna(how='any').drop_duplicates()
     # Export the DataFrame to a csv file
@@ -160,16 +168,17 @@ def scrape_stack_overflow(csv_file_name='Stack Overflow Salaries.csv'):
             result = requests.get(url)
             soup = BeautifulSoup(result.text, 'html.parser')
             for job in soup.find_all('div', {'class': '-job-summary'}):
-                records.append((get_title_so(job), get_company_so(job), get_location_so(job), get_salary_so(job)))
+                records.append((get_title_so(job), get_company_so(job), get_location_so(job), get_salary_so(job),
+                                get_cost_of_living(city)))
             sleep(2)
 
-    df = pd.DataFrame(records, columns=['Job Title', 'Company', 'Location', 'Salary'])
+    df = pd.DataFrame(records, columns=['Job Title', 'Company', 'Location', 'Salary', 'Cost Of Living'])
     clean_df = df.dropna(how='any').drop_duplicates()
     clean_df.to_csv(csv_file_name)
 
 
 # Get Salaries around the bay area
-# scrape_indeed()
+scrape_indeed()
 
 # # Clean up Indeed Salaries data.
 # # Cleans up salaries: Removes Estimated Salaries, Include only yearly salary, & Finds the average
@@ -185,6 +194,6 @@ def scrape_stack_overflow(csv_file_name='Stack Overflow Salaries.csv'):
 # complete_df = pd.concat([df_Indeed, df_stack_overflow], join='outer', ignore_index=True)
 # complete_df.to_csv('Complete Salaries.csv')
 
-# scrape_indeed('NewSalaries.csv')
+#scrape_indeed('NewSalaries.csv')
 
-# clean_up_salaries('NewSalaries.csv', 'SalaryData.csv')
+#clean_up_salaries('NewSalaries.csv', 'SalaryData.csv')
