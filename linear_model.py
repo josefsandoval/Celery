@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 
-salaries = pd.read_csv('Complete Salaries.csv', index_col=0).reset_index(drop=True)
+salaries = pd.read_csv('Indeed Salaries with Cities Clean.csv', index_col=0).reset_index(drop=True)
 
 cities_states = []
 for location in salaries.Location:
