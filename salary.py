@@ -6,12 +6,6 @@ import pandas as pd
 import numpy as np
 import re
 
-cities = ['San Jose', 'San Francisco', 'San Diego', 'Los Angeles', 'Portland', 'Seattle', 'Chicago',
-          'Dallas', 'Houston', 'Boston', 'Baltimore', 'Atlanta', 'New York', 'Columbus', 'Washington',
-          'Denver', 'Huntsville']
-
-job_title = ['Software', 'Computer Science']
-
 cost_of_living_data = pd.read_csv("ColData.csv")
 
 # Helper functions to get the data from Indeed and Stack Overflow tags
@@ -115,7 +109,7 @@ def clean_up_salaries(csv_file, name='clean.csv'):
 # first page: 0-44, second page: 44-88, third page: 88-132 etc... <-- each page will return 50 results.
 # start range at 0 increment by 44 every time, this should give us ~1000 salary results total for our data
 # (20 soups, each should contain avg. 50 results)
-def scrape_indeed(csv_file_name='Indeed Salaries.csv'):
+def scrape_indeed(cities, job_title, csv_file_name='Indeed Salaries.csv'):
     records = []
     max_results = 1320
     for title in job_title:
@@ -152,7 +146,7 @@ def scrape_indeed(csv_file_name='Indeed Salaries.csv'):
 
 
 # Scrape StackOverflow job postings
-def scrape_stack_overflow(csv_file_name='Stack Overflow Salaries.csv'):
+def scrape_stack_overflow(cities, job_title, csv_file_name='Stack Overflow Salaries.csv'):
     records = []
     for city in cities:
         # Just to get the total number of pages with job postings
@@ -178,11 +172,11 @@ def scrape_stack_overflow(csv_file_name='Stack Overflow Salaries.csv'):
 
 
 # Get Salaries around the bay area
-scrape_indeed("Indeed Salaries with Cities.csv")
+#scrape_indeed("Indeed Salaries with Cities.csv")
 
 # # Clean up Indeed Salaries data.
 # # Cleans up salaries: Removes Estimated Salaries, Include only yearly salary, & Finds the average
-clean_up_salaries('Indeed Salaries with Cities.csv', 'Indeed Salaries with Cities Clean.csv')
+#clean_up_salaries('Indeed Salaries with Cities.csv', 'Indeed Salaries with Cities Clean.csv')
 #
 # # scrape_stack_overflow()
 # clean_up_salaries('Stack Overflow Salaries.csv', 'Stack Overflow Salaries Clean.csv')
