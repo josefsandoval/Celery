@@ -6,12 +6,7 @@ import pandas as pd
 import numpy as np
 import re
 
-cities = ['San Jose', 'San Francisco', 'San Diego', 'Los Angeles', 'Portland', 'Seattle', 'Chicago',
-          'Dallas', 'Houston', 'Boston', 'Baltimore', 'Atlanta', 'New York', 'Columbus', 'Washington',
-          'Denver', 'Huntsville']
-
-job_title = ['Software', 'Computer Science']
-
+cost_of_living_data = pd.read_csv("ColData.csv")
 
 # Helper functions to get the data from Indeed and Stack Overflow tags
 def get_company(tag):
@@ -75,6 +70,13 @@ def get_salary_so(job_post):
     except:
         return None
 
+#get cost of living
+def get_cost_of_living(city):
+    #get first row
+    colCitiesList = cost_of_living_data.iloc[:, 0].tolist()
+    index = colCitiesList.index(city)
+    return cost_of_living_data.iloc[index, 2]
+
 
 # Clean up salaries from out csv file to only include yearly incomes, remove any estimated salaries
 # param1: csv file we want to clean, param2: cleaned/new csv file name
@@ -107,7 +109,7 @@ def clean_up_salaries(csv_file, name='clean.csv'):
 # first page: 0-44, second page: 44-88, third page: 88-132 etc... <-- each page will return 50 results.
 # start range at 0 increment by 44 every time, this should give us ~1000 salary results total for our data
 # (20 soups, each should contain avg. 50 results)
-def scrape_indeed(csv_file_name='Indeed Salaries.csv'):
+def scrape_indeed(cities, job_title, csv_file_name='Indeed Salaries.csv'):
     records = []
     max_results = 1320
     for title in job_title:
@@ -134,9 +136,9 @@ def scrape_indeed(csv_file_name='Indeed Salaries.csv'):
             print('{} jobs found near {}'.format(len(jobs), city))
 
             for job in jobs:
-                records.append((get_title(job), get_company(job), get_location(job), get_salary(job)))
+                records.append((get_title(job), get_company(job), city, get_salary(job), get_cost_of_living(city)))
 
-    df = pd.DataFrame(records, columns=['Job_Title', 'Company', 'Location', 'Salary'])
+    df = pd.DataFrame(records, columns=['Job_Title', 'Company', 'Location', 'Salary', 'Cost of Living'])
     # drop any data that has missing values, remove any duplicates that appear
     clean = df.dropna(how='any').drop_duplicates()
     # Export the DataFrame to a csv file
@@ -144,7 +146,7 @@ def scrape_indeed(csv_file_name='Indeed Salaries.csv'):
 
 
 # Scrape StackOverflow job postings
-def scrape_stack_overflow(csv_file_name='Stack Overflow Salaries.csv'):
+def scrape_stack_overflow(cities, job_title, csv_file_name='Stack Overflow Salaries.csv'):
     records = []
     for city in cities:
         # Just to get the total number of pages with job postings
@@ -160,20 +162,21 @@ def scrape_stack_overflow(csv_file_name='Stack Overflow Salaries.csv'):
             result = requests.get(url)
             soup = BeautifulSoup(result.text, 'html.parser')
             for job in soup.find_all('div', {'class': '-job-summary'}):
-                records.append((get_title_so(job), get_company_so(job), get_location_so(job), get_salary_so(job)))
+                records.append((get_title_so(job), get_company_so(job), get_location_so(job), get_salary_so(job),
+                                get_cost_of_living(city)))
             sleep(2)
 
-    df = pd.DataFrame(records, columns=['Job Title', 'Company', 'Location', 'Salary'])
+    df = pd.DataFrame(records, columns=['Job Title', 'Company', 'Location', 'Salary', 'Cost Of Living'])
     clean_df = df.dropna(how='any').drop_duplicates()
     clean_df.to_csv(csv_file_name)
 
 
 # Get Salaries around the bay area
-# scrape_indeed()
+#scrape_indeed("Indeed Salaries with Cities.csv")
 
 # # Clean up Indeed Salaries data.
 # # Cleans up salaries: Removes Estimated Salaries, Include only yearly salary, & Finds the average
-# clean_up_salaries('Indeed Salaries.csv', 'Indeed Salaries Clean.csv')
+#clean_up_salaries('Indeed Salaries with Cities.csv', 'Indeed Salaries with Cities Clean.csv')
 #
 # # scrape_stack_overflow()
 # clean_up_salaries('Stack Overflow Salaries.csv', 'Stack Overflow Salaries Clean.csv')
@@ -185,6 +188,6 @@ def scrape_stack_overflow(csv_file_name='Stack Overflow Salaries.csv'):
 # complete_df = pd.concat([df_Indeed, df_stack_overflow], join='outer', ignore_index=True)
 # complete_df.to_csv('Complete Salaries.csv')
 
-# scrape_indeed('NewSalaries.csv')
+#scrape_indeed('NewSalaries.csv')
 
-# clean_up_salaries('NewSalaries.csv', 'SalaryData.csv')
+#clean_up_salaries('NewSalaries.csv', 'SalaryData.csv')
