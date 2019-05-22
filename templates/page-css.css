@@ -1,0 +1,59 @@
+html,body{
+    height: 100%;
+}
+
+@media (min-width: 768px) {
+    header.mylayout {
+        padding-top: 7rem;
+        padding-bottom: 10rem;
+    }
+    header.masthead h1 {
+        font-size: 3rem;
+    }
+}
+
+header.mylayout {
+  position: relative;
+  background-color: #343a40;
+  background: url("img/background.png") no-repeat center center;
+  background-size: cover;
+  padding-top: 8rem;
+  padding-bottom: 8rem;
+}
+
+h1.header-text {
+    font-size:9vw;
+    font-family: "Damion";
+    font-weight: 900;
+    font-style: italic;
+    color: beige;
+}
+
+header.mylayout .overlay {
+  position: absolute;
+  background-color: #212529;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0.3;
+}
+
+footer.footer {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    background-color: #181a1c;
+    color: #fff;
+}
+
+.container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.copyright {
+    background-color: #0f0f10;
+}
