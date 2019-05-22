@@ -4,14 +4,23 @@ class Person:
     def __init__(self, city, jobTitle, yearOfExperience, salary):
         self.city = city
         self.jobTitle = jobTitle
-        self.yearOfExpereince = yearOfExperience
+        self.yearOfExperience = yearOfExperience
         self.salary = salary
 
 
 class KB:
+    def percentageByExperience(self, yearOfExperience):
+        if yearOfExperience >= 0 and yearOfExperience <= 5:
+            return -10
+        elif yearOfExperience > 5 and yearOfExperience < 15:
+            return 5
+        elif yearOfExperience >= 15 and yearOfExperience < 25:
+            return 19
+        elif yearOfExperience >= 25:
+            return 28
 
-    def predictSalary(person):
-        percentage = percentage(person.yearOfExperience)
+    def predictSalary(self, person):
+        percentage = self.percentageByExperience(person.yearOfExperience)
         salaryByExperience = 0
         salary = person.salary
 
@@ -25,15 +34,7 @@ class KB:
         return salaryByExperience
 
 
-    def percentageByExperience(self, yearOfExperince):
-        if yearOfExperience >= 0 and yearOfExperience <= 5:
-            return -10
-        elif yearOfExperience > 5 and yearOfExperience < 15:
-            return 5
-        elif yearOfExperience >= 15 and yearOfExperience < 25:
-            return 19
-        elif yearOfExperience >= 25:
-            return 28
+
 
 
 
@@ -42,7 +43,7 @@ if __name__ == '__main__':
     kb1 = KB()
     user = Person("San Jose", "Software Engineer", 12, 120000)
     predictedSalary = 0
-    predictedSalary = kb1.predictSalary(kb1, user)
+    predictedSalary = kb1.predictSalary(user)
 
     print( "Initial Salary: " )
     print(user.salary)
