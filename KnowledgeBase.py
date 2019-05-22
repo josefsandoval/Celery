@@ -29,15 +29,7 @@ class KB:
 
     def predictSalary(self, person):
         percentage = self.percentageByExperience(person.yearOfExperience)
-        salaryByExperience = 0
         salary = person.salary
-
-        if percentage >= 0:
-            salaryByExperience = (salary * (1 + (percentage / 100)))
-            return salaryByExperience
-        else:
-            salaryByExperience = (salary * (1 - (percentage / 100)))
-            return salaryByExperience
-
+        salaryByExperience = (salary * (1 + (percentage / 100)))
         return salaryByExperience
 
