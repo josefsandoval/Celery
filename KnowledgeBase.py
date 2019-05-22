@@ -1,4 +1,5 @@
 import math
+import pandas as pd
 
 class Person:
     def __init__(self, city, jobTitle, yearOfExperience, salary):
@@ -9,6 +10,13 @@ class Person:
 
 
 class KB:
+    def findCoL(self, city):
+        cost_of_living_data = pd.read_csv("ColData.csv")
+        # get first row
+        colCitiesList = cost_of_living_data.iloc[:, 0].tolist()
+        index = colCitiesList.index(city)
+        return cost_of_living_data.iloc[index, 2]
+
     def percentageByExperience(self, yearOfExperience):
         if yearOfExperience >= 0 and yearOfExperience <= 5:
             return -10
@@ -33,25 +41,3 @@ class KB:
 
         return salaryByExperience
 
-
-
-
-
-
-if __name__ == '__main__':
-
-    kb1 = KB()
-    user = Person("San Jose", "Software Engineer", 12, 120000)
-    predictedSalary = 0
-    predictedSalary = kb1.predictSalary(user)
-
-    print( "Initial Salary: " )
-    print(user.salary)
-    print("      The AI predicted salary for a ")
-    print(user.jobTitle)
-    print(" in ")
-    print(user.city)
-    print(" with ")
-    print(user.yearOfExperience)
-    print(" years of experience is: ")
-    print(predictedSalary)

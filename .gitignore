@@ -1,3 +1,5 @@
 .idea
 /venv
 /letsGetTheseGraphs/
+/___pycache__/*
+__pycache__/*

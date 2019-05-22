@@ -1,5 +1,6 @@
 import pandas as pd
 import re
+import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
@@ -19,7 +20,6 @@ salaries['Location'] = cities_states
 location_dummies = pd.get_dummies(salaries.Location).iloc[:, 1:]
 
 merged = pd.concat([salaries, location_dummies], axis='columns')
-
 
 final = merged.drop(['Location', 'Job_Title', 'Company'], axis='columns')
 
@@ -44,6 +44,9 @@ print("lr.coef_: {}".format(regr_model.coef_))
 print("lr.intercept_: {}".format(regr_model.intercept_))
 print("Training set score: {:.2f}".format(regr_model.score(x_train, y_train)))
 print("Test set score: {:.3f}".format(regr_model.score(x_test, y_test)))
+
+def get_linear_model():
+    return regr_model
 
 # print(y_pred)
 # df = pd.DataFrame({'Actual': y_test, 'Predicted': y_pred.round(2)})
