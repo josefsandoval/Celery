@@ -1,5 +1,5 @@
 import salary as salary
-import linear_model as lm
+import linear_model_new as lm
 import KnowledgeBase as kb
 
 cities = ['San Jose', 'San Francisco', 'San Diego', 'Los Angeles', 'Portland', 'Seattle', 'Chicago',
@@ -22,10 +22,12 @@ if __name__ == '__main__':
     #take in user job title
     userJobTitle = input("Enter a job title you want to predict a salary for: ")
 
-    #get years of experience
-    userYOE = int(input("Enter your years of experience:"))
-
-    #input validation
+    #get years of experience, sets to 0 if user doesn't enter a number
+    userYOE = 0
+    try:
+        userYOE = int(input("Enter your years of experience:"))
+    except ValueError:
+        print("Error not a number. Defaulting to 0 years of experience")
 
     user = kb.Person(userCity, userJobTitle, userYOE, 0)
 
@@ -40,29 +42,21 @@ if __name__ == '__main__':
         salary.clean_up_salaries('Indeed Salaries with Cities.csv', 'Indeed Salaries with Cities Clean.csv')
 
     # get linear regression model
-    linear_reg_model = lm.get_linear_model()
+    linear_reg_model = lm.get_model()
 
     #initialize knowledge base
     kb1 = kb.KB()
 
     #find corresponding cost of living for user
     costOfLiving = kb1.findCoL(user.city)
-    #user.salary = linear_reg_model.predict([[costOfLiving]])
+    user.salary = float(linear_reg_model.predict([[costOfLiving]])[0])
 
     #ask KB for correct percentage change according to experience
     predictedSalary = 0
     predictedSalary = kb1.predictSalary(user)
 
-    print( "Initial Salary: " )
-    print(user.salary)
-    print("      The AI predicted salary for a ")
-    print(user.jobTitle)
-    print(" in ")
-    print(user.city)
-    print(" with ")
-    print(user.yearOfExperience)
-    print(" years of experience is: ")
-    print(predictedSalary)
+    print("The AI predicted salary for a " +user.jobTitle + " in " +
+          user.city + " with " + str(user.yearOfExperience) + " years of experience is: \n$" + "{:10.2f}".format(predictedSalary))
 
 
 
