@@ -20,7 +20,9 @@ if __name__ == '__main__':
                          "Columbus, Washington, Denver, or Huntsville: ")
 
     #take in user job title
-    userJobTitle = input("Enter a job title you want to predict a salary for: ")
+    userJobTitle = input("Enter a job title you want to predict a salary for "
+                         "(Note: Enter 'Software Engineer' unless you want the app to run for an hour "
+                         "scraping data.): ")
 
     #get years of experience, sets to 0 if user doesn't enter a number
     userYOE = 0
